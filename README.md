@@ -1,5 +1,5 @@
-skgsergio's MicroPython Libraries
-=================================
+MicroPython's PyBoard Libraries from skgsergio
+==============================================
 
 About
 -----
