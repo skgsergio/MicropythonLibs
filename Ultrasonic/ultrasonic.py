@@ -2,7 +2,7 @@
 # Ultrasonic library for MicroPython's pyboard.
 # Compatible with HC-SR04 and SRF04.
 #
-# Copyright 2014 - Sergio Conde Gómez <skgsergio@gmail.com> 
+# Copyright 2014 - Sergio Conde Gómez <skgsergio@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ trigger.low()
 echo = pyb.Pin(echoPin)
 echo.init(pyb.Pin.IN, pyb.Pin.PULL_NONE)
 
+
 def calcDist():
     start = 0
     end = 0
@@ -58,6 +59,7 @@ def calcDist():
     # Deinit the microseconds counter
     micros.deinit()
 
-    # Calc the duration of the recieved pulse, divide the result by 2 (round-trip)
-    # and divide it by 29 (the speed of sound is 340 m/s and that is 29 us/cm).
+    # Calc the duration of the recieved pulse, divide the result by
+    # 2 (round-trip) and divide it by 29 (the speed of sound is
+    # 340 m/s and that is 29 us/cm).
     return ((end - start) / 2) / 29
