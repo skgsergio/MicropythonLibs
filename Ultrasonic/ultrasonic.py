@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+# yet to test
+
 import pyb
 
 # Pin configuration.
@@ -35,7 +37,15 @@ echo = pyb.Pin(echoPin)
 echo.init(pyb.Pin.IN, pyb.Pin.PULL_NONE)
 
 
-def calcDist():
+def calcDist(tr, ec): # parameters trigger and echo pins
+    
+    # Init trigger pin (out)
+    tr.init(pyb.Pin.OUT_PP, pyb.Pin.PULL_NONE)
+    tr.low()
+    
+    # Init echo pin (in)
+    ec.init(pyb.Pin.IN, pyb.Pin.PULL_NONE)
+    
     start = 0
     end = 0
 
@@ -44,16 +54,16 @@ def calcDist():
     micros.counter(0)
 
     # Send a 10us pulse.
-    trigger.high()
+    tr.high()
     pyb.udelay(10)
-    trigger.low()
+    tr.low()
 
     # Wait 'till whe pulse starts.
-    while echo.value() == 0:
+    while ec.value() == 0:
         start = micros.counter()
 
     # Wait 'till the pulse is gone.
-    while echo.value() == 1:
+    while ec.value() == 1:
         end = micros.counter()
 
     # Deinit the microseconds counter
