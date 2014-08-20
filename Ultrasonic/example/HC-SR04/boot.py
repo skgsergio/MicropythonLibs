@@ -1,3 +1,3 @@
 import pyb
 
-import ultrasonic
+pyb.main('main.py')

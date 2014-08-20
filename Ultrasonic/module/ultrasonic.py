@@ -3,6 +3,7 @@
 # Compatible with HC-SR04 and SRF04.
 #
 # Copyright 2014 - Sergio Conde Gómez <skgsergio@gmail.com>
+# Improved by Mithru Vigneshwara
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,11 +21,10 @@
 
 import pyb
 
-# Pin configuration.
-# WARNING: Do not use PA4-X5 or PA5-X6 as the echo pin without a 1k resistor.
 
 class Ultrasonic:
     def __init__(self, tPin, ePin):
+        # WARNING: Don't use PA4-X5 or PA5-X6 as echo pin without a 1k resistor
         self.triggerPin = tPin
         self.echoPin = ePin
 
