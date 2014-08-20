@@ -18,58 +18,55 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-# yet to test
-
 import pyb
 
 # Pin configuration.
 # WARNING: Do not use PA4-X5 or PA5-X6 as the echo pin without a 1k resistor.
-triggerPin = pyb.Pin.board.X3
-echoPin = pyb.Pin.board.X4
 
-# Init trigger pin (out)
-trigger = pyb.Pin(triggerPin)
-trigger.init(pyb.Pin.OUT_PP, pyb.Pin.PULL_NONE)
-trigger.low()
+class Ultrasonic:
+    def __init__(self, tPin, ePin):
+        self.triggerPin = tPin
+        self.echoPin = ePin
 
-# Init echo pin (in)
-echo = pyb.Pin(echoPin)
-echo.init(pyb.Pin.IN, pyb.Pin.PULL_NONE)
+        # Init trigger pin (out)
+        self.trigger = pyb.Pin(self.triggerPin)
+        self.trigger.init(pyb.Pin.OUT_PP, pyb.Pin.PULL_NONE)
+        self.trigger.low()
 
+        # Init echo pin (in)
+        self.echo = pyb.Pin(self.echoPin)
+        self.echo.init(pyb.Pin.IN, pyb.Pin.PULL_NONE)
 
-def calcDist(tr, ec): # parameters trigger and echo pins
-    
-    # Init trigger pin (out)
-    tr.init(pyb.Pin.OUT_PP, pyb.Pin.PULL_NONE)
-    tr.low()
-    
-    # Init echo pin (in)
-    ec.init(pyb.Pin.IN, pyb.Pin.PULL_NONE)
-    
-    start = 0
-    end = 0
+    def distance_in_inches(self):
+        return (self.distance_in_cm() * 0.3937)
 
-    # Create a microseconds counter.
-    micros = pyb.Timer(2, prescaler=83, period=0x3fffffff)
-    micros.counter(0)
+    def distance_in_cm(self):
+        start = 0
+        end = 0
 
-    # Send a 10us pulse.
-    tr.high()
-    pyb.udelay(10)
-    tr.low()
+        # Create a microseconds counter.
+        micros = pyb.Timer(2, prescaler=83, period=0x3fffffff)
+        micros.counter(0)
 
-    # Wait 'till whe pulse starts.
-    while ec.value() == 0:
-        start = micros.counter()
+        # Send a 10us pulse.
+        self.trigger.high()
+        pyb.udelay(10)
+        self.trigger.low()
 
-    # Wait 'till the pulse is gone.
-    while ec.value() == 1:
-        end = micros.counter()
+        # Wait 'till whe pulse starts.
+        while self.echo.value() == 0:
+            start = micros.counter()
 
-    # Deinit the microseconds counter
-    micros.deinit()
+        # Wait 'till the pulse is gone.
+        while self.echo.value() == 1:
+            end = micros.counter()
 
-    # Calc the duration of the recieved pulse, divide the result by
-    # 2 (round-trip) and divide it by 29 (the speed of sound is
-    # 340 m/s and that is 29 us/cm).
-    return ((end - start) / 2) / 29
+        # Deinit the microseconds counter
+        micros.deinit()
+
+        # Calc the duration of the recieved pulse, divide the result by
+        # 2 (round-trip) and divide it by 29 (the speed of sound is
+        # 340 m/s and that is 29 us/cm).
+        dist_in_cm = ((end - start) / 2) / 29
+
+        return dist_in_cm
